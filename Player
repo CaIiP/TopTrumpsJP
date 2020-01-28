@@ -1,0 +1,46 @@
+package TopTrumps;
+
+public class Player {
+    
+     
+    private String name;
+    private Card[] playerCards;
+    
+    // Constructor
+    public Player(String name) {
+        this.name = name;
+        this.playerCards = new Card[0];
+    }
+
+    public String getName() {return name;}
+
+    public Card[] getplayerCards(){
+        return playerCards;
+      }
+
+    public int getplayerCardsSize(){
+        return this.playerCards.length;}
+    
+    public Card getCardAtIndex(int index){
+        return this.playerCards[index];
+        }
+    
+    public void giveCard(Card newCard) {
+        Card[] newPlayerCard = new Card[this.playerCards.length+1];
+        System.arraycopy(this.hand, 0, newPlayerCard, 0, playerCards.length);
+        
+        newPlayerCard[playerCards.length] = newCard;
+        this.playerCards = newPlayerCard;
+    }
+
+    public Card takeCard() {
+        Card takenCard = this.playerCards[0];        
+        Card[] newPlayerCard = new Card[this.playerCards.length-1];
+        
+          for (int i = 0; i < newPlayerCard.length; i++) {newPlayerCard[i] = this.playerCards[i+1];}
+            this.playerCards = newPlayerCard;
+            
+          if (this.getPlayerCardsSize() == 0)       
+            return takenCard;
+    }
+}
