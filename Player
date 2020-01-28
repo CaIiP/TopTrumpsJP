@@ -2,8 +2,7 @@ package TopTrumps;
 
 public class Player {
     
-     
-    private String name;
+    private String name; // player name in command line 
     private Card[] playerCards;
     
     // Constructor
@@ -12,18 +11,21 @@ public class Player {
         this.playerCards = new Card[0];
     }
 
-    public String getName() {return name;}
+    public String getName(){
+        return name;
+    }
 
     public Card[] getplayerCards(){
         return playerCards;
-      }
+    }
 
     public int getplayerCardsSize(){
-        return this.playerCards.length;}
+        return this.playerCards.length;
+    }
     
-    public Card getCardAtIndex(int index){
+    public Card getCardAtIndex(int index){ // set formula that identifies starting card - index in the array
         return this.playerCards[index];
-        }
+    }
     
     public void giveCard(Card newCard) {
         Card[] newPlayerCard = new Card[this.playerCards.length+1];
