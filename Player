@@ -2,47 +2,29 @@ package TopTrumps;
 
 public class Player {
     
-    private String name; // player name in command line 
-    private Card[] playerCards;
-    
+    private Card[] hand; 
+    private final String name;
+    private boolean keepPlaying;
+
     // Constructor
     public Player(String name) {
         this.name = name;
-        this.playerCards = new Card[0];
+        this.hand = new Card[0];
+        this.keepPlaying = true;
     }
 
-    public String getName(){
-        return name;
-    }
+    public String getName() {return name;}
 
-    public Card[] getplayerCards(){
-        return playerCards;
-    }
+    public Card[] getHand() {return hand;}
+    public void setHand(Card[] hand) {this.hand = hand;}
 
-    public int getplayerCardsSize(){
-        return this.playerCards.length;
-    }
-    
-    public Card getCardAtIndex(int index){ // set formula that identifies starting card - index in the array
-        return this.playerCards[index];
-    }
+    public boolean isKeepPlaying() {return keepPlaying;}
+    public void setKeepPlaying(boolean keepPlaying) {this.keepPlaying = keepPlaying;}
     
     public void giveCard(Card newCard) {
-        Card[] newPlayerCard = new Card[this.playerCards.length+1];
-        System.arraycopy(this.hand, 0, newPlayerCard, 0, playerCards.length);
-        
-        newPlayerCard[playerCards.length] = newCard;
-        this.playerCards = newPlayerCard;
-    }
-
-    public Card takeCard() {
-        Card takenCard = this.playerCards[0];        
-        Card[] newPlayerCard = new Card[this.playerCards.length-1];
-        
-          for (int i = 0; i < newPlayerCard.length; i++) {newPlayerCard[i] = this.playerCards[i+1];}
-            this.playerCards = newPlayerCard;
-            
-          if (this.getPlayerCardsSize() == 0) // cards taken until array is 0    
-            return takenCard;
+        Card[] newHand = new Card[this.hand.length+1];
+        System.arraycopy(this.hand, 0, newHand, 0, hand.length);
+        newHand[hand.length] = newCard;
+        this.hand = newHand;
     }
 }
