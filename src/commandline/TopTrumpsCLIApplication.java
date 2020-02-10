@@ -1,7 +1,7 @@
 package commandline;
 
 
-import TopTrumps.Pack;
+import TopTrumps.Deck;
 import TopTrumps.Card;
 import TopTrumps.Player;
 import TopTrumps.Game;
@@ -9,6 +9,7 @@ import TopTrumps.Round;
 import TopTrumps.CommunalPile;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -17,10 +18,11 @@ import java.util.Scanner;
  */
 public class TopTrumpsCLIApplication {
 
-        private final String deck_file;
+        private final String deck_file; 
         private final int no_cards;
         private final String user_name;
-	private Pack Pack;  		 
+        private final ArrayList<Card> Deck= new ArrayList<Card>();;
+	private final Deck deck = new Deck(Deck,"Size","Speed","Range","FirePower","Cargo");  		 
         private Player[] Players; 
         private Player decidingPlayer;
         private Player[] NewPlayers;
@@ -30,28 +32,28 @@ public class TopTrumpsCLIApplication {
         private int numPlayers;
 	private String prevRoundString;
         private boolean userWantsToQuit; // flag to check whether the user wants to quit the application
+        private ArrayList<String> lines = new ArrayList<String>();
         
-
+        //Constructor
         public TopTrumpsCLIApplication(String deck_file, int no_cards, String user_name) {
             this.deck_file = deck_file;
             this.no_cards = no_cards;
             this.user_name = user_name;
         }
-        
+        //main 
 	public static void main(String[] args) {
             boolean writeGameLogsToFile = false; // Should we write game logs to file?
             if (args[0].equalsIgnoreCase("true")) writeGameLogsToFile=true; // Command line selection
-            TopTrumpsCLIApplication TopTrumps = new TopTrumpsCLIApplication("StarCitizenDeck.txt",40,"Human");
+            TopTrumpsCLIApplication TopTrumps = new TopTrumpsCLIApplication("StarCitizenDeck.txt",40,"Human");//The class object is created TopTrumpsCLIApplication initializing the name of the deck, the number of cards that the deck must have and the name of the human who played
 		// Loop until the user wants to exit the game
             while (!TopTrumps.userWantsToQuit) {
                 // ----------------------------------------------------
 		// Add your game logic here based on the requirements
 		// ----------------------------------------------------
-                TopTrumps.generateDeck();
                 TopTrumps.userWantsToQuit=true; 
-                TopTrumps.prevRoundString = "";
-                TopTrumps.Pack.shufflePack();		
-                TopTrumps.Game = new Game(0,0);     
+                TopTrumps.prevRoundString = "";//String variable that is used to show the results of the rounds that are given
+                TopTrumps.deck.shuffleDeck(); //Based on the deck that is loaded, all cards are shuffled		
+                TopTrumps.Game = new Game(0,0); //An object of the Game class is created     
                 /*System.out.println ("Please choose with how many players you want to play between 2 and 5.");
                 String entradaTeclado;
                 Scanner entradaEscaner = new Scanner (System.in); 
@@ -65,24 +67,20 @@ public class TopTrumpsCLIApplication {
                         TopTrumps.userWantsToQuit=true; 
                     }else{*/
                         //System.out.println (args[1]+" PASO");
-                        TopTrumps.numPlayers = 5;
-                        TopTrumps.NewPlayers = new Player[TopTrumps.numPlayers];
-                        System.out.println (args.length+" PASO");
-                        if(args.length > 1){
-                            System.out.println (" PASO");
-                        }
-                        if(args.length > 1){
-                            if(!args[1].equals("-b")){
-                                Player Human = new Player(TopTrumps.user_name);
-                                TopTrumps.NewPlayers[0] = Human;
-                                String[] CompPlayerNames = { "BotOne", "BotTwo", "BotThree", "BotFour" };
-                                for (int i = 1; i < TopTrumps.numPlayers; i++) {
+                        TopTrumps.numPlayers = 5; //In this variable it is indicated how many players will be in the game, including the human if this were the option chosen
+                        TopTrumps.NewPlayers = new Player[TopTrumps.numPlayers]; //The variable that will handle all the players of the new game is created.
+                        if(args.length > 1){ //It is verified if arguments were passed to the execution of the program to know what the game mode will be
+                            if(!args[1].equals("-b")){ //If the argument is different from -b then the mode chosen is that a human play against the 4 robots.
+                                Player Human = new Player(TopTrumps.user_name); //We create the object to handle the human player
+                                TopTrumps.NewPlayers[0] = Human;//We assign the human class to the class that handles all the players in index 0
+                                String[] CompPlayerNames = { "BotOne", "BotTwo", "BotThree", "BotFour" };//We create an arrangement of the names of our robots
+                                for (int i = 1; i < TopTrumps.numPlayers; i++) { //Here we create one by one the additional players apart from the player one that would be the human
                                     TopTrumps.NewPlayers[i] = new Player(CompPlayerNames[i - 1]);
                                 }
                                 TopTrumps.Players = TopTrumps.NewPlayers;  
 
-                                Random rand = new Random();
-                                int decidingPlayerIndex = rand.nextInt(TopTrumps.Players.length);
+                                Random rand = new Random();//We create the random object of java that will help us so that the system randomly decides which player to start the game
+                                int decidingPlayerIndex = rand.nextInt(TopTrumps.Players.length);//We use its nextInt method and we pass the amount of players that will play to give us the index of the player who started the game.
                                 TopTrumps.decidingPlayer = TopTrumps.Players[decidingPlayerIndex];
                                 String WhoseTurn = String.format("Current player turn: %s%n%n", 
                                                            TopTrumps.decidingPlayer.getName());
@@ -90,7 +88,7 @@ public class TopTrumpsCLIApplication {
                                 TopTrumps.currentPile = new CommunalPile();
                                 for (int i = 0; i < TopTrumps.no_cards; i++) {
                                     Player p = TopTrumps.Players[i % TopTrumps.numPlayers];
-                                    p.giveCard(TopTrumps.Pack.getCards()[i]);
+                                    p.giveCard(TopTrumps.deck.getDeck().get(i));
                                 }
                                 String UserCardInfo;
                                 Player user = TopTrumps.Players[0];
@@ -100,16 +98,16 @@ public class TopTrumpsCLIApplication {
                                 }else{
                                     Card UserCurrentCard = user.getHand()[0];
                                     String CardDescription = String.format("%s%n", UserCurrentCard.getName());
-                                    String CardAttribute1 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute1(),
-                                                        UserCurrentCard.getAttribute1Val());
-                                    String CardAttribute2 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute2(),
-                                                        UserCurrentCard.getAttribute2Val());
-                                    String CardAttribute3 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute3(),
-                                                        UserCurrentCard.getAttribute3Val());
-                                    String CardAttribute4 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute4(),
-                                                        UserCurrentCard.getAttribute4Val());
-                                    String CardAttribute5 = String.format("%s: %s   %n%n", TopTrumps.Pack.getAttribute5(),
-                                                    UserCurrentCard.getAttribute5Val());
+                                    String CardAttribute1 = String.format("%s: %s   ", TopTrumps.deck.getSize(),
+                                                        UserCurrentCard.getSize());
+                                    String CardAttribute2 = String.format("%s: %s   ", TopTrumps.deck.getSpeed(),
+                                                        UserCurrentCard.getSpeed());
+                                    String CardAttribute3 = String.format("%s: %s   ", TopTrumps.deck.getRange(),
+                                                        UserCurrentCard.getRange());
+                                    String CardAttribute4 = String.format("%s: %s   ", TopTrumps.deck.getFirepower(),
+                                                        UserCurrentCard.getFirepower());
+                                    String CardAttribute5 = String.format("%s: %s   %n%n", TopTrumps.deck.getCargo(),
+                                                    UserCurrentCard.getCargo());
                                     UserCardInfo = CardDescription + CardAttribute1 + CardAttribute2 
                                                                 + CardAttribute3 + CardAttribute4 + CardAttribute5;
                                 }
@@ -122,22 +120,22 @@ public class TopTrumpsCLIApplication {
                                 }
 
                                 System.out.println();
-                                String attribute1 = TopTrumps.Pack.getAttribute1();
-                                String attribute2 = TopTrumps.Pack.getAttribute2();
-                                String attribute3 = TopTrumps.Pack.getAttribute3();
-                                String attribute4 = TopTrumps.Pack.getAttribute4();
-                                String attribute5 = TopTrumps.Pack.getAttribute5();
+                                String attribute1 = TopTrumps.deck.getSize();
+                                String attribute2 = TopTrumps.deck.getSpeed();
+                                String attribute3 = TopTrumps.deck.getRange();
+                                String attribute4 = TopTrumps.deck.getFirepower();
+                                String attribute5 = TopTrumps.deck.getCargo();
                                 String attributeNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                                 attribute1, attribute2, attribute3, attribute4, attribute5);
                                 System.out.println(attributeNameString);
                                 for (int i = 0; i < TopTrumps.no_cards; i++) {
-                                    Card CurrentCard = TopTrumps.Pack.getCards()[i];
+                                    Card CurrentCard = TopTrumps.deck.getDeck().get(i);
                                     String nameValue = CurrentCard.getName();
-                                    String attribute1Val = Integer.toString(CurrentCard.getAttribute1Val());
-                                    String attribute2Val = Integer.toString(CurrentCard.getAttribute2Val());
-                                    String attribute3Val = Integer.toString(CurrentCard.getAttribute3Val());
-                                    String attribute4Val = Integer.toString(CurrentCard.getAttribute4Val());
-                                    String attribute5Val = Integer.toString(CurrentCard.getAttribute5Val());
+                                    String attribute1Val = Integer.toString(CurrentCard.getSize());
+                                    String attribute2Val = Integer.toString(CurrentCard.getSpeed());
+                                    String attribute3Val = Integer.toString(CurrentCard.getRange());
+                                    String attribute4Val = Integer.toString(CurrentCard.getFirepower());
+                                    String attribute5Val = Integer.toString(CurrentCard.getCargo());
 
                                     String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                                         attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
@@ -147,11 +145,11 @@ public class TopTrumpsCLIApplication {
                                 for (Player P : TopTrumps.Players) {
                                     System.out.println("-------------------------------------");
                                     System.out.println("Cards belonging to: " + P.getName());
-                                    String attrCard1 = TopTrumps.Pack.getAttribute1();
-                                    String attrCard2 = TopTrumps.Pack.getAttribute2();
-                                    String attrCard3 = TopTrumps.Pack.getAttribute3();
-                                    String attrCard4 = TopTrumps.Pack.getAttribute4();
-                                    String attrCard5 = TopTrumps.Pack.getAttribute5();
+                                    String attrCard1 = TopTrumps.deck.getSize();
+                                    String attrCard2 = TopTrumps.deck.getSpeed();
+                                    String attrCard3 = TopTrumps.deck.getRange();
+                                    String attrCard4 = TopTrumps.deck.getFirepower();
+                                    String attrCard5 = TopTrumps.deck.getCargo();
 
                                     String attrCardsNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                                     attrCard1, attrCard2, attrCard3, attrCard4, attrCard5);
@@ -159,11 +157,11 @@ public class TopTrumpsCLIApplication {
                                     System.out.println(attrCardsNameString);
                                     for (Card hand : P.getHand()) {
                                         String nameValue = hand.getName();
-                                        String attribute1Val = Integer.toString(hand.getAttribute1Val());
-                                        String attribute2Val = Integer.toString(hand.getAttribute2Val());
-                                        String attribute3Val = Integer.toString(hand.getAttribute3Val());
-                                        String attribute4Val = Integer.toString(hand.getAttribute4Val());
-                                        String attribute5Val = Integer.toString(hand.getAttribute5Val());
+                                        String attribute1Val = Integer.toString(hand.getSize());
+                                        String attribute2Val = Integer.toString(hand.getSpeed());
+                                        String attribute3Val = Integer.toString(hand.getRange());
+                                        String attribute4Val = Integer.toString(hand.getFirepower());
+                                        String attribute5Val = Integer.toString(hand.getCargo());
 
                                         String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                                                 attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
@@ -190,28 +188,28 @@ public class TopTrumpsCLIApplication {
                                 TopTrumps.currentPile = new CommunalPile();
                                 for (int i = 0; i < TopTrumps.no_cards; i++) {
                                     Player p = TopTrumps.Players[i % TopTrumps.numPlayers];
-                                    p.giveCard(TopTrumps.Pack.getCards()[i]);
+                                    p.giveCard(TopTrumps.deck.getDeck().get(i));
                                 }
 
                                 TopTrumps.playRound(0,2);
 
                                 System.out.println();
-                                String attribute1 = TopTrumps.Pack.getAttribute1();
-                                String attribute2 = TopTrumps.Pack.getAttribute2();
-                                String attribute3 = TopTrumps.Pack.getAttribute3();
-                                String attribute4 = TopTrumps.Pack.getAttribute4();
-                                String attribute5 = TopTrumps.Pack.getAttribute5();
+                                String attribute1 = TopTrumps.deck.getSize();
+                                String attribute2 = TopTrumps.deck.getSpeed();
+                                String attribute3 = TopTrumps.deck.getRange();
+                                String attribute4 = TopTrumps.deck.getFirepower();
+                                String attribute5 = TopTrumps.deck.getCargo();
                                 String attributeNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                                 attribute1, attribute2, attribute3, attribute4, attribute5);
                                 System.out.println(attributeNameString);
                                 for (int i = 0; i < TopTrumps.no_cards; i++) {
-                                    Card CurrentCard = TopTrumps.Pack.getCards()[i];
+                                    Card CurrentCard = TopTrumps.deck.getDeck().get(i);
                                     String nameValue = CurrentCard.getName();
-                                    String attribute1Val = Integer.toString(CurrentCard.getAttribute1Val());
-                                    String attribute2Val = Integer.toString(CurrentCard.getAttribute2Val());
-                                    String attribute3Val = Integer.toString(CurrentCard.getAttribute3Val());
-                                    String attribute4Val = Integer.toString(CurrentCard.getAttribute4Val());
-                                    String attribute5Val = Integer.toString(CurrentCard.getAttribute5Val());
+                                    String attribute1Val = Integer.toString(CurrentCard.getSize());
+                                    String attribute2Val = Integer.toString(CurrentCard.getSpeed());
+                                    String attribute3Val = Integer.toString(CurrentCard.getRange());
+                                    String attribute4Val = Integer.toString(CurrentCard.getFirepower());
+                                    String attribute5Val = Integer.toString(CurrentCard.getCargo());
 
                                     String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                                         attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
@@ -221,11 +219,11 @@ public class TopTrumpsCLIApplication {
                                 for (Player P : TopTrumps.Players) {
                                     System.out.println("-------------------------------------");
                                     System.out.println("Cards belonging to: " + P.getName());
-                                    String attrCard1 = TopTrumps.Pack.getAttribute1();
-                                    String attrCard2 = TopTrumps.Pack.getAttribute2();
-                                    String attrCard3 = TopTrumps.Pack.getAttribute3();
-                                    String attrCard4 = TopTrumps.Pack.getAttribute4();
-                                    String attrCard5 = TopTrumps.Pack.getAttribute5();
+                                    String attrCard1 = TopTrumps.deck.getSize();
+                                    String attrCard2 = TopTrumps.deck.getSpeed();
+                                    String attrCard3 = TopTrumps.deck.getRange();
+                                    String attrCard4 = TopTrumps.deck.getFirepower();
+                                    String attrCard5 = TopTrumps.deck.getCargo();
 
                                     String attrCardsNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                                     attrCard1, attrCard2, attrCard3, attrCard4, attrCard5);
@@ -233,11 +231,11 @@ public class TopTrumpsCLIApplication {
                                     System.out.println(attrCardsNameString);
                                     for (Card hand : P.getHand()) {
                                         String nameValue = hand.getName();
-                                        String attribute1Val = Integer.toString(hand.getAttribute1Val());
-                                        String attribute2Val = Integer.toString(hand.getAttribute2Val());
-                                        String attribute3Val = Integer.toString(hand.getAttribute3Val());
-                                        String attribute4Val = Integer.toString(hand.getAttribute4Val());
-                                        String attribute5Val = Integer.toString(hand.getAttribute5Val());
+                                        String attribute1Val = Integer.toString(hand.getSize());
+                                        String attribute2Val = Integer.toString(hand.getSpeed());
+                                        String attribute3Val = Integer.toString(hand.getRange());
+                                        String attribute4Val = Integer.toString(hand.getFirepower());
+                                        String attribute5Val = Integer.toString(hand.getCargo());
 
                                         String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                                                 attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
@@ -267,7 +265,7 @@ public class TopTrumpsCLIApplication {
                             TopTrumps.currentPile = new CommunalPile();
                             for (int i = 0; i < TopTrumps.no_cards; i++) {
                                 Player p = TopTrumps.Players[i % TopTrumps.numPlayers];
-                                p.giveCard(TopTrumps.Pack.getCards()[i]);
+                                p.giveCard(TopTrumps.deck.getDeck().get(i));
                             }
                             String UserCardInfo;
                             Player user = TopTrumps.Players[0];
@@ -277,16 +275,16 @@ public class TopTrumpsCLIApplication {
                             }else{
                                 Card UserCurrentCard = user.getHand()[0];
                                 String CardDescription = String.format("%s%n", UserCurrentCard.getName());
-                                String CardAttribute1 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute1(),
-                                                        UserCurrentCard.getAttribute1Val());
-                                String CardAttribute2 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute2(),
-                                                        UserCurrentCard.getAttribute2Val());
-                                String CardAttribute3 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute3(),
-                                                        UserCurrentCard.getAttribute3Val());
-                                String CardAttribute4 = String.format("%s: %s   ", TopTrumps.Pack.getAttribute4(),
-                                                        UserCurrentCard.getAttribute4Val());
-                                String CardAttribute5 = String.format("%s: %s   %n%n", TopTrumps.Pack.getAttribute5(),
-                                                    UserCurrentCard.getAttribute5Val());
+                                String CardAttribute1 = String.format("%s: %s   ", TopTrumps.deck.getSize(),
+                                                        UserCurrentCard.getSize());
+                                String CardAttribute2 = String.format("%s: %s   ", TopTrumps.deck.getSpeed(),
+                                                        UserCurrentCard.getSpeed());
+                                String CardAttribute3 = String.format("%s: %s   ", TopTrumps.deck.getRange(),
+                                                        UserCurrentCard.getRange());
+                                String CardAttribute4 = String.format("%s: %s   ", TopTrumps.deck.getFirepower(),
+                                                        UserCurrentCard.getFirepower());
+                                String CardAttribute5 = String.format("%s: %s   %n%n", TopTrumps.deck.getCargo(),
+                                                    UserCurrentCard.getCargo());
                                 UserCardInfo = CardDescription + CardAttribute1 + CardAttribute2 
                                                                 + CardAttribute3 + CardAttribute4 + CardAttribute5;
                             }
@@ -299,22 +297,22 @@ public class TopTrumpsCLIApplication {
                             }
 
                             System.out.println();
-                            String attribute1 = TopTrumps.Pack.getAttribute1();
-                            String attribute2 = TopTrumps.Pack.getAttribute2();
-                            String attribute3 = TopTrumps.Pack.getAttribute3();
-                            String attribute4 = TopTrumps.Pack.getAttribute4();
-                            String attribute5 = TopTrumps.Pack.getAttribute5();
+                            String attribute1 = TopTrumps.deck.getSize();
+                            String attribute2 = TopTrumps.deck.getSpeed();
+                            String attribute3 = TopTrumps.deck.getRange();
+                            String attribute4 = TopTrumps.deck.getFirepower();
+                            String attribute5 = TopTrumps.deck.getCargo();
                             String attributeNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                                 attribute1, attribute2, attribute3, attribute4, attribute5);
                             System.out.println(attributeNameString);
                             for (int i = 0; i < TopTrumps.no_cards; i++) {
-                                Card CurrentCard = TopTrumps.Pack.getCards()[i];
+                                Card CurrentCard = TopTrumps.deck.getDeck().get(i);
                                 String nameValue = CurrentCard.getName();
-                                String attribute1Val = Integer.toString(CurrentCard.getAttribute1Val());
-                                String attribute2Val = Integer.toString(CurrentCard.getAttribute2Val());
-                                String attribute3Val = Integer.toString(CurrentCard.getAttribute3Val());
-                                String attribute4Val = Integer.toString(CurrentCard.getAttribute4Val());
-                                String attribute5Val = Integer.toString(CurrentCard.getAttribute5Val());
+                                String attribute1Val = Integer.toString(CurrentCard.getSize());
+                                String attribute2Val = Integer.toString(CurrentCard.getSpeed());
+                                String attribute3Val = Integer.toString(CurrentCard.getRange());
+                                String attribute4Val = Integer.toString(CurrentCard.getFirepower());
+                                String attribute5Val = Integer.toString(CurrentCard.getCargo());
 
                                 String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                                         attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
@@ -324,11 +322,11 @@ public class TopTrumpsCLIApplication {
                             for (Player P : TopTrumps.Players) {
                                 System.out.println("-------------------------------------");
                                 System.out.println("Cards belonging to: " + P.getName());
-                                String attrCard1 = TopTrumps.Pack.getAttribute1();
-                                String attrCard2 = TopTrumps.Pack.getAttribute2();
-                                String attrCard3 = TopTrumps.Pack.getAttribute3();
-                                String attrCard4 = TopTrumps.Pack.getAttribute4();
-                                String attrCard5 = TopTrumps.Pack.getAttribute5();
+                                String attrCard1 = TopTrumps.deck.getSize();
+                                String attrCard2 = TopTrumps.deck.getSpeed();
+                                String attrCard3 = TopTrumps.deck.getRange();
+                                String attrCard4 = TopTrumps.deck.getFirepower();
+                                String attrCard5 = TopTrumps.deck.getCargo();
 
                                 String attrCardsNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                                     attrCard1, attrCard2, attrCard3, attrCard4, attrCard5);
@@ -336,11 +334,11 @@ public class TopTrumpsCLIApplication {
                                 System.out.println(attrCardsNameString);
                                 for (Card hand : P.getHand()) {
                                     String nameValue = hand.getName();
-                                    String attribute1Val = Integer.toString(hand.getAttribute1Val());
-                                    String attribute2Val = Integer.toString(hand.getAttribute2Val());
-                                    String attribute3Val = Integer.toString(hand.getAttribute3Val());
-                                    String attribute4Val = Integer.toString(hand.getAttribute4Val());
-                                    String attribute5Val = Integer.toString(hand.getAttribute5Val());
+                                    String attribute1Val = Integer.toString(hand.getSize());
+                                    String attribute2Val = Integer.toString(hand.getSpeed());
+                                    String attribute3Val = Integer.toString(hand.getRange());
+                                    String attribute4Val = Integer.toString(hand.getFirepower());
+                                    String attribute5Val = Integer.toString(hand.getCargo());
 
                                     String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                                                 attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
@@ -374,7 +372,7 @@ public class TopTrumpsCLIApplication {
         }
         
         private void UserPicking(int type) {
-            System.out.println ("Please choose what attribute you want to take for the round: Attr1 choose 1, Attr2 choose 2, Attr3 choose 3, Attr4 choose 4, Attr5 choose 5");
+            System.out.println ("Please choose what attribute you want to take for the round: Size choose 1, Speed choose 2, Range choose 3, FirePower choose 4, Cargo choose 5");
             String entradaTeclado;
             Scanner entradaEscaner = new Scanner (System.in); 
             entradaTeclado = entradaEscaner.nextLine ();
@@ -398,18 +396,26 @@ public class TopTrumpsCLIApplication {
 
 	private void checkIfGameOver(int type) {
             if(type == 1){
-                Player user = this.Round.getPlayers()[0];	
-                if (user.getHand().length == this.Round.getPack().getCards().length-this.Round.getPile().getCards().length 
-                        || user.getHand().length == 0) {
-                    String Result = "Lost";
-                    if(this.Round.getWinner() != null){
-                        if (this.Round.getWinner().getName().equals(this.user_name)) {
-                            Result = "Win";
+                int pass = 0;
+                for (int i = 0; i < this.numPlayers; i++) {
+                    Player user = this.Round.getPlayers()[i];
+                    int length = user.getHand().length;
+                    /*if (user.getHand().length == this.Round.getDeck().getDeck().size()-this.Round.getPile().getCards().length 
+                            || user.getHand().length == 0) {*/
+                    if(length == 40){
+                        String Result = "Lost";
+                        if(this.Round.getWinner() != null){
+                            if (this.Round.getWinner().getName().equals(this.user_name)) {
+                                Result = "Win";
+                            }
+                            System.out.println ("Game over, you " + Result);
+                            this.userWantsToQuit = false;
                         }
-                        System.out.println ("Game over, you " + Result);
-                        this.userWantsToQuit = false;
+                        pass = 1;
+                        break;
                     }
-                }else{
+                }
+                if(pass == 0){
                     if (decidingPlayer.getName().equals(user_name)) {
                         UserPicking(type);
                     } else {
@@ -417,9 +423,9 @@ public class TopTrumpsCLIApplication {
                     }
                 }
             }else if(type == 2){
-                for (int i = 1; i < this.numPlayers; i++) {
+                for (int i = 0; i < this.numPlayers; i++) {
                     Player user = this.Round.getPlayers()[i];	
-                    if (user.getHand().length == this.Round.getPack().getCards().length-this.Round.getPile().getCards().length 
+                    if (user.getHand().length == this.Round.getDeck().getDeck().size()-this.Round.getPile().getCards().length 
                             || user.getHand().length == 0) {
                         String Result;
                         if(this.Round.getWinner() != null){
@@ -441,75 +447,11 @@ public class TopTrumpsCLIApplication {
             }
 	}
 
-	private void generateDeck() {
-	    int arrayLength = no_cards + 1;
-            String[] linesArray = new String[arrayLength];
-            try {
-                FileReader reader = new FileReader(this.deck_file);
-                try (Scanner in = new Scanner(reader)) {
-                    for (int i = 0; i < arrayLength; i++) {linesArray[i] = in.nextLine();}
-                }
-            } catch (IOException e) {
-                System.out.println("Exception: " + e.getMessage());
-                System.exit(-1);
-            }
-	    String[] deckLineStrings = linesArray;
-	    String names = deckLineStrings[0];
-	    String[] namesStringArray = names.split(" +");
-	    String attri1Name = namesStringArray[1];
-	    String attri2Name = namesStringArray[2];
-	    String attri3Name = namesStringArray[3];
-	    String attri4Name = namesStringArray[4];
-	    String attri5Name = namesStringArray[5];
-            Card[] CardArray = new Card[deckLineStrings.length - 1];
-	    for (int i = 1; i < deckLineStrings.length; i++) {
-		String numString = deckLineStrings[i];
-		String[] numStringArray = numString.split(" +");
-		String cardName = numStringArray[0];
-		int attri1 = Integer.parseInt(numStringArray[1]);
-		int attri2 = Integer.parseInt(numStringArray[2]);
-		int attri3 = Integer.parseInt(numStringArray[3]);
-		int attri4 = Integer.parseInt(numStringArray[4]);
-		int attri5 = Integer.parseInt(numStringArray[5]);
-		Card newCard = new Card(cardName, attri1, attri2, attri3, attri4, attri5);
-		CardArray[i - 1] = newCard;
-	    }
-	    this.Pack = new Pack(CardArray, attri1Name, attri2Name, attri3Name, attri4Name, attri5Name);
-	    System.out.println("-------------------------------------");
-	    System.out.println("Unshuffled pack:");
-	    String attribute1 = Pack.getAttribute1();
-	    String attribute2 = Pack.getAttribute2();
-	    String attribute3 = Pack.getAttribute3();
-	    String attribute4 = Pack.getAttribute4();
-	    String attribute5 = Pack.getAttribute5();
-
-	    String attributeNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
-				attribute1, attribute2, attribute3, attribute4, attribute5);
-
-	    System.out.println(attributeNameString);
-
-	    for (int i = 0; i < no_cards; i++) {
-		Card CurrentCard = Pack.getCards()[i];
-		String nameValue = CurrentCard.getName();
-                String attribute1Val = Integer.toString(CurrentCard.getAttribute1Val());
-                String attribute2Val = Integer.toString(CurrentCard.getAttribute2Val());
-                String attribute3Val = Integer.toString(CurrentCard.getAttribute3Val());
-                String attribute4Val = Integer.toString(CurrentCard.getAttribute4Val());
-                String attribute5Val = Integer.toString(CurrentCard.getAttribute5Val());
-
-                String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
-                                        attribute1Val, attribute2Val, attribute3Val, attribute4Val, attribute5Val);
-
-                System.out.println(attValString);
-
-	    }
-	    System.out.println("-------------------------------------");
-	}
-
+	
 	private void playRound(int trumpIndex, int type) {
 	    Round CurrRound;
             CurrRound = new Round(Players, decidingPlayer, currentPile, 
-                    trumpIndex, Pack,
+                    trumpIndex, deck,
                     no_cards);
 	    this.Round = CurrRound;		  
 	    this.Round.saveValues();
@@ -539,16 +481,16 @@ public class TopTrumpsCLIApplication {
                 }else{
                     Card UserCurrentCard = user.getHand()[0];
                     String CardDescription = String.format("%s%n", UserCurrentCard.getName());
-                    String CardAttribute1 = String.format("%s: %s   ", Pack.getAttribute1(),
-                                        UserCurrentCard.getAttribute1Val());
-                    String CardAttribute2 = String.format("%s: %s   ", Pack.getAttribute2(),
-                                        UserCurrentCard.getAttribute2Val());
-                    String CardAttribute3 = String.format("%s: %s   ", Pack.getAttribute3(),
-                                        UserCurrentCard.getAttribute3Val());
-                    String CardAttribute4 = String.format("%s: %s   ", Pack.getAttribute4(),
-                                        UserCurrentCard.getAttribute4Val());
-                    String CardAttribute5 = String.format("%s: %s   %n%n", Pack.getAttribute5(),
-                                        UserCurrentCard.getAttribute5Val());
+                    String CardAttribute1 = String.format("%s: %s   ", deck.getSize(),
+                                        UserCurrentCard.getSize());
+                    String CardAttribute2 = String.format("%s: %s   ", deck.getSpeed(),
+                                        UserCurrentCard.getSpeed());
+                    String CardAttribute3 = String.format("%s: %s   ", deck.getRange(),
+                                        UserCurrentCard.getRange());
+                    String CardAttribute4 = String.format("%s: %s   ", deck.getFirepower(),
+                                        UserCurrentCard.getFirepower());
+                    String CardAttribute5 = String.format("%s: %s   %n%n", deck.getCargo(),
+                                        UserCurrentCard.getCargo());
                     UserCardInfo = CardDescription + CardAttribute1 + CardAttribute2 
                                                     + CardAttribute3 + CardAttribute4 + CardAttribute5;
                 }
