@@ -52,16 +52,16 @@ public class TopTrumpsCLIApplication {
                 TopTrumps.prevRoundString = "";
                 TopTrumps.Pack.shufflePack();		
                 TopTrumps.Game = new Game(0,0);     
-                System.out.println ("Please choose with how many players you want to play between 2 and 4.");
+                System.out.println ("Please choose with how many players you want to play between 2 and 5.");
                 String entradaTeclado;
                 Scanner entradaEscaner = new Scanner (System.in); 
                 entradaTeclado = entradaEscaner.nextLine ();
                 if(isNumeric(entradaTeclado)){
                     if(entradaTeclado == "1"){
-                        System.out.println ("Please choose with how many players you want to play between 2 and 4.");
+                        System.out.println ("Please choose with how many players you want to play between 2 and 5.");
                         TopTrumps.userWantsToQuit=true; 
-                    } else if(Integer.parseInt(entradaTeclado) > 4){
-                        System.out.println ("You cannot play more than 4 players");
+                    } else if(Integer.parseInt(entradaTeclado) > 5){
+                        System.out.println ("You cannot play more than 5 players");
                         TopTrumps.userWantsToQuit=true; 
                     }else{
                         TopTrumps.numPlayers = Integer.parseInt(entradaTeclado);
