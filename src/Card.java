@@ -1,10 +1,10 @@
-package model;
+package TopTrumps;
 
 /**
  */
 public class Card {
     
-	//Instance variables
+	// Instance variables
     //attributes 
 	private String name;
 	private int size;
@@ -23,7 +23,7 @@ public class Card {
 		this.speed = sp;
 		this.range = r;
 	}
-	//constructor 
+	
 	public Card(String fullLine)	{
 		  String[] splitLine = fullLine.split(" ");
 		  this.name = splitLine[0];

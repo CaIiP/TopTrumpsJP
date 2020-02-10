@@ -1,5 +1,7 @@
 package TopTrumps;
 
+import java.util.Arrays;
+
 public class Round {
 	private final int ATTR = 5;
 	private final Player[] players;
@@ -8,14 +10,14 @@ public class Round {
 	private CommunalPile pile;
 	private Player winner = null;
 	private final Player decidingPlayer;
-	private final Pack pack;
+	private final Deck deck;
 	private boolean draw = false;
 	private final int[] prevValues;
 
-	public Round(Player[] playersArray, Player CurrentDecidingPlayer, CommunalPile communalPipe, int Index, Pack pack,
+	public Round(Player[] playersArray, Player CurrentDecidingPlayer, CommunalPile communalPipe, int Index, Deck deck,
 			 int numCards) {
 	    this.players = playersArray;
-	    this.pack = pack;
+	    this.deck = deck;
 	    this.pile = communalPipe;
 	    this.decidingPlayer=CurrentDecidingPlayer;
 	    prevValues = new int[players.length];
@@ -27,7 +29,7 @@ public class Round {
 	}
 
         public Player[] getPlayers() {return players;}
-        public Pack getPack() {return pack;}
+        public Deck getDeck() {return deck;}
         public CommunalPile getPile() {return pile;}
         public Player getWinner() {return winner;}
         public boolean isDraw() {return draw;}
@@ -40,11 +42,11 @@ public class Round {
 	    int AttributeValue = 0;
 	    for (int i = 0; i < ATTR; i++) {
                 int Attribute = -1;
-                if(i == 1){Attribute = topCard.getAttribute1Val();
-                }else if(i == 2){Attribute = topCard.getAttribute2Val();
-                }else if(i == 3){Attribute = topCard.getAttribute3Val();
-                }else if(i == 4){Attribute = topCard.getAttribute4Val();
-                }else if(i == 5){Attribute = topCard.getAttribute5Val();
+                if(i == 1){Attribute = topCard.getSize();
+                }else if(i == 2){Attribute = topCard.getSpeed();
+                }else if(i == 3){Attribute = topCard.getRange();
+                }else if(i == 4){Attribute = topCard.getFirepower();
+                }else if(i == 5){Attribute = topCard.getCargo();
                 }
 		if (Attribute > AttributeValue) {
                     AttributeValue = Attribute;
@@ -60,11 +62,11 @@ public class Round {
 		if (players[i].getHand().length != 0) {
 		    cards[i] = players[i].getHand()[0];
                     int Attribute = -1;
-                    if(Index == 1){Attribute = cards[i].getAttribute1Val();
-                    }else if(Index == 2){Attribute = cards[i].getAttribute2Val();
-                    }else if(Index == 3){Attribute = cards[i].getAttribute3Val();
-                    }else if(Index == 4){Attribute = cards[i].getAttribute4Val();
-                    }else if(Index == 5){Attribute = cards[i].getAttribute5Val();}  
+                    if(Index == 1){Attribute = cards[i].getSize();
+                    }else if(Index == 2){Attribute = cards[i].getSpeed();
+                    }else if(Index == 3){Attribute = cards[i].getRange();
+                    }else if(Index == 4){Attribute = cards[i].getFirepower();
+                    }else if(Index == 5){Attribute = cards[i].getCargo();}  
 		    prevValues[i] = Attribute;
 		}
             }
@@ -74,11 +76,11 @@ public class Round {
             if(type == 1){
                 String roundString = String.format("");
                 String Attribute = "";
-                if(Index == 1){Attribute = this.pack.getAttribute1();
-                }else if(Index == 2){Attribute = this.pack.getAttribute2();
-                }else if(Index == 3){Attribute = this.pack.getAttribute3();
-                }else if(Index == 4){Attribute = this.pack.getAttribute4();
-                }else if(Index == 5){Attribute = this.pack.getAttribute5();}
+                if(Index == 1){Attribute = this.deck.getSize();
+                }else if(Index == 2){Attribute = this.deck.getSpeed();
+                }else if(Index == 3){Attribute = this.deck.getRange();
+                }else if(Index == 4){Attribute = this.deck.getFirepower();
+                }else if(Index == 5){Attribute = this.deck.getCargo();}
                 roundString += String.format("Previous round attribute: %s%n", Attribute);
                 String score = String.format("");
                 for (int i = 0; i < this.players.length; i++) {
@@ -95,7 +97,7 @@ public class Round {
                 System.out.println();
                 String WinLost = String.format("%n%n");
                 Player user = this.players[0];
-                if (user.getHand().length == this.pack.getCards().length-this.pile.getCards().length) {
+                if (user.getHand().length == this.deck.getDeck().size()-this.pile.getCards().length) {
                     if(this.winner != null){
                         WinLost += String.format("YOU WON THE GAME!: "+ this.winner.getName());
                     }else{
@@ -118,11 +120,11 @@ public class Round {
             }else{
                 String roundString = String.format("");
                 String Attribute = "";
-                if(Index == 1){Attribute = this.pack.getAttribute1();
-                }else if(Index == 2){Attribute = this.pack.getAttribute2();
-                }else if(Index == 3){Attribute = this.pack.getAttribute3();
-                }else if(Index == 4){Attribute = this.pack.getAttribute4();
-                }else if(Index == 5){Attribute = this.pack.getAttribute5();}
+                if(Index == 1){Attribute = this.deck.getSize();
+                }else if(Index == 2){Attribute = this.deck.getSpeed();
+                }else if(Index == 3){Attribute = this.deck.getRange();
+                }else if(Index == 4){Attribute = this.deck.getFirepower();
+                }else if(Index == 5){Attribute = this.deck.getCargo();}
                 roundString += String.format("Previous round attribute: %s%n", Attribute);
                 String score = String.format("");
                 for (int i = 0; i < this.players.length; i++) {
@@ -140,7 +142,7 @@ public class Round {
                 
                 for (int i = 1; i < players.length; i++) {
                     Player user = this.players[i];
-                    if (user.getHand().length == this.pack.getCards().length-this.pile.getCards().length) {
+                    if (user.getHand().length == this.deck.getDeck().size()-this.pile.getCards().length) {
                         if(this.winner != null){
                             WinLost += String.format("YOU WON THE GAME!: "+ this.winner.getName());
                         }else{
@@ -181,22 +183,22 @@ public class Round {
 	    Cards = cardsArray; 
 	    System.out.println("---------------------------");
 	    System.out.println("******** Cards in play: ********");
-	    String attribute1Name = this.pack.getAttribute1();
-	    String attribute2Name = this.pack.getAttribute2();
-	    String attribute3Name = this.pack.getAttribute3();
-	    String attribute4Name = this.pack.getAttribute4();
-	    String attribute5Name = this.pack.getAttribute5();
+	    String attribute1Name = this.deck.getSize();
+	    String attribute2Name = this.deck.getSpeed();
+	    String attribute3Name = this.deck.getRange();
+	    String attribute4Name = this.deck.getFirepower();
+	    String attribute5Name = this.deck.getCargo();
 	    String attributeNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
 				attribute1Name, attribute2Name, attribute3Name, attribute4Name, attribute5Name);
 	    System.out.println(attributeNameString);
             for (Card Card : Cards) {
                 if (Card != null) {
                     String nameValue = Card.getName();
-                    String att1Value = Integer.toString(Card.getAttribute1Val());
-                    String att2Value = Integer.toString(Card.getAttribute2Val());
-                    String att3Value = Integer.toString(Card.getAttribute3Val());
-                    String att4Value = Integer.toString(Card.getAttribute4Val());
-                    String att5Value = Integer.toString(Card.getAttribute5Val());
+                    String att1Value = Integer.toString(Card.getSize());
+                    String att2Value = Integer.toString(Card.getSpeed());
+                    String att3Value = Integer.toString(Card.getRange());
+                    String att4Value = Integer.toString(Card.getFirepower());
+                    String att5Value = Integer.toString(Card.getCargo());
 
                     String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                     att1Value, att2Value, att3Value, att4Value, att5Value);
@@ -206,11 +208,11 @@ public class Round {
             }
 	    System.out.println("---------------------------");
             String Attribute = "";
-            if(Index == 1){Attribute = this.pack.getAttribute1();
-            }else if(Index == 2){Attribute = this.pack.getAttribute2();
-            }else if(Index == 3){Attribute = this.pack.getAttribute3();
-            }else if(Index == 4){Attribute = this.pack.getAttribute4();
-            }else if(Index == 5){Attribute = this.pack.getAttribute5();}
+            if(Index == 1){Attribute = this.deck.getSize();
+            }else if(Index == 2){Attribute = this.deck.getSpeed();
+            }else if(Index == 3){Attribute = this.deck.getRange();
+            }else if(Index == 4){Attribute = this.deck.getFirepower();
+            }else if(Index == 5){Attribute = this.deck.getCargo();}
             System.out.println("Category selected: " + Attribute);
             System.out.println("Values:");
             for (int i = 0; i < this.players.length; i++) {
@@ -224,16 +226,16 @@ public class Round {
             boolean drawR = false;
 	    int maxScore = 50;
 	    int[] playerScores = new int[maxScore];
-            System.out.println(playerScores);
+            //System.out.println(Arrays.toString(playerScores));
 	    for (int i = 0; i < players.length; i++) {
 		if (Cards[i] != null) {
 		    Card c = Cards[i];
                     int AttributeR = -1;
-                    if(this.Index == 1){AttributeR = c.getAttribute1Val();
-                    }else if(this.Index == 2){AttributeR = c.getAttribute2Val();
-                    }else if(this.Index == 3){AttributeR = c.getAttribute3Val();
-                    }else if(this.Index == 4){AttributeR = c.getAttribute4Val();
-                    }else if(this.Index == 5){AttributeR = c.getAttribute5Val();}
+                    if(this.Index == 1){AttributeR = c.getSize();
+                    }else if(this.Index == 2){AttributeR = c.getSpeed();
+                    }else if(this.Index == 3){AttributeR = c.getRange();
+                    }else if(this.Index == 4){AttributeR = c.getFirepower();
+                    }else if(this.Index == 5){AttributeR = c.getCargo();}
 		    int score = AttributeR;
                     if(score == 0){
                         playerScores[score]++;
@@ -259,11 +261,11 @@ public class Round {
 		    try{
 			Card c = Cards[i];
                         int AttributeW = -1;
-                        if(this.Index == 1){AttributeW = c.getAttribute1Val();
-                        }else if(this.Index == 2){AttributeW = c.getAttribute2Val();
-                        }else if(this.Index == 3){AttributeW = c.getAttribute3Val();
-                        }else if(this.Index == 4){AttributeW = c.getAttribute4Val();
-                        }else if(this.Index == 5){AttributeW = c.getAttribute5Val();
+                        if(this.Index == 1){AttributeW = c.getSize();
+                        }else if(this.Index == 2){AttributeW = c.getSpeed();
+                        }else if(this.Index == 3){AttributeW = c.getRange();
+                        }else if(this.Index == 4){AttributeW = c.getFirepower();
+                        }else if(this.Index == 5){AttributeW = c.getCargo();
                         }
 			if (AttributeW == topS) {
 			    winner = null;
@@ -272,7 +274,7 @@ public class Round {
 			    winner = players[i];
 			}
 		    } catch (Exception e){
-			System.out.println("" + players[i] + " has no cards left.");
+			System.out.println("" + players[i].getName() + " has no cards left.");
 		    }				
 		}
             }	   
@@ -289,22 +291,22 @@ public class Round {
                 if (p.getHand().length > 0) {
                     System.out.println("---------------------------");
                     System.out.println("Cards in hand belonging to: " + p.getName());
-                    String attribute1PHandName = this.pack.getAttribute1();
-                    String attribute2PHandName = this.pack.getAttribute2();
-                    String attribute3PHandName = this.pack.getAttribute3();
-                    String attribute4PHandName = this.pack.getAttribute4();
-                    String attribute5PHandName = this.pack.getAttribute5();
+                    String attribute1PHandName = this.deck.getSize();
+                    String attribute2PHandName = this.deck.getSpeed();
+                    String attribute3PHandName = this.deck.getRange();
+                    String attribute4PHandName = this.deck.getFirepower();
+                    String attribute5PHandName = this.deck.getCargo();
                     String attributePHandNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
                                     attribute1PHandName, attribute2PHandName, attribute3PHandName, attribute4PHandName, attribute5PHandName);
 
                     System.out.println(attributePHandNameString);
                     for (Card hand : p.getHand()) {
                         String nameValue = hand.getName();
-                        String att1Value = Integer.toString(hand.getAttribute1Val());
-                        String att2Value = Integer.toString(hand.getAttribute2Val());
-                        String att3Value = Integer.toString(hand.getAttribute3Val());
-                        String att4Value = Integer.toString(hand.getAttribute4Val());
-                        String att5Value = Integer.toString(hand.getAttribute5Val());
+                        String att1Value = Integer.toString(hand.getSize());
+                        String att2Value = Integer.toString(hand.getSpeed());
+                        String att3Value = Integer.toString(hand.getRange());
+                        String att4Value = Integer.toString(hand.getFirepower());
+                        String att5Value = Integer.toString(hand.getCargo());
                         String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                         att1Value, att2Value, att3Value, att4Value, att5Value);
                         System.out.println(attValString);
@@ -315,22 +317,22 @@ public class Round {
 	    if (this.pile.getCards().length > 0) {
 		System.out.println("---------------------------");
 		System.out.println("Common Pile:");
-		String attribute1CPileName = this.pack.getAttribute1();
-		String attribute2CPileName = this.pack.getAttribute2();
-		String attribute3CPileName = this.pack.getAttribute3();
-		String attribute4CPileName = this.pack.getAttribute4();
-		String attribute5CPileName = this.pack.getAttribute5();
+		String attribute1CPileName = this.deck.getSize();
+		String attribute2CPileName = this.deck.getSpeed();
+		String attribute3CPileName = this.deck.getRange();
+		String attribute4CPileName = this.deck.getFirepower();
+		String attribute5CPileName = this.deck.getCargo();
 		String attributeCPileNameString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", "",
 				attribute1CPileName, attribute2CPileName, attribute3CPileName, attribute4CPileName, attribute5CPileName);
 
 		System.out.println(attributeCPileNameString);
 		for (int i = 0; i < this.pile.getCards().length; i++) {
                     String nameValue = this.pile.getCards()[i].getName();
-                    String att1Value = Integer.toString(this.pile.getCards()[i].getAttribute1Val());
-                    String att2Value = Integer.toString(this.pile.getCards()[i].getAttribute2Val());
-                    String att3Value = Integer.toString(this.pile.getCards()[i].getAttribute3Val());
-                    String att4Value = Integer.toString(this.pile.getCards()[i].getAttribute4Val());
-                    String att5Value = Integer.toString(this.pile.getCards()[i].getAttribute5Val());
+                    String att1Value = Integer.toString(this.pile.getCards()[i].getSize());
+                    String att2Value = Integer.toString(this.pile.getCards()[i].getSpeed());
+                    String att3Value = Integer.toString(this.pile.getCards()[i].getRange());
+                    String att4Value = Integer.toString(this.pile.getCards()[i].getFirepower());
+                    String att5Value = Integer.toString(this.pile.getCards()[i].getCargo());
 
                     String attValString = String.format("%20.20s %15.15s %15.15s " + "%15.15s %15.15s %15.15s", nameValue,
                                     att1Value, att2Value, att3Value, att4Value, att5Value);
