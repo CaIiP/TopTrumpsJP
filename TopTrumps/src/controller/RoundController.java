@@ -4,10 +4,10 @@ import model.Card;
 import model.Player;
 
 public class RoundController {
-		
+	//Function that is used to know which attribute was chosen for the selected round and thus be able to value that attribute of the game cards	
 	public int getIndex(Player decidingPlayer,int ATTR) {
-		System.out.println(decidingPlayer.getName());
-		Card topCard = decidingPlayer.getHand()[0];
+		System.out.println(decidingPlayer.getName());// It shows that player was selected for this round as the main
+		Card topCard = decidingPlayer.getHand()[0];//An object is created that will have the card to play right now by the main user of this round
 		int AttributeIndex = 0;
 		int AttributeValue = 0;
 		for (int i = 0; i < ATTR; i++) {
@@ -31,6 +31,7 @@ public class RoundController {
 		return AttributeIndex;
 	}
 	
+	//Function used to save the values of previous rounds
 	public void saveValues(Player[] players,int Index,int[] prevValues) {
 		Card[] cards = new Card[players.length];
 		for (int i = 0; i < cards.length; i++) {

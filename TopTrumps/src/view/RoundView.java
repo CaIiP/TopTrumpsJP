@@ -8,106 +8,59 @@ import model.Player;
 import model.Round;
 
 public class RoundView {
-	public String getRoundString(int type,Round round) {
-		if (type == 1) {
-			String roundString = String.format("");
-			String Attribute = "";
-			if (round.getIndex() == 1) {
-				Attribute = round.getDeck().getSize();
-			} else if (round.getIndex() == 2) {
-				Attribute = round.getDeck().getSpeed();
-			} else if (round.getIndex() == 3) {
-				Attribute = round.getDeck().getRange();
-			} else if (round.getIndex() == 4) {
-				Attribute = round.getDeck().getFirepower();
-			} else if (round.getIndex() == 5) {
-				Attribute = round.getDeck().getCargo();
-			}
-			roundString += String.format("Previous round attribute: %s%n", Attribute);
-			String score = String.format("");
-			for (int i = 0; i < round.getPlayers().length; i++) {
-				Player p = round.getPlayers()[i];
-				if (p.getHand().length > 0) {
-					score += String.format("%s: ", p.getName());
-					score += String.format("%d    ", round.getPrevValues()[i]);
-				}
-			}
-			score += String.format("%n%n");
-			roundString += score;
+	
+	public String getRoundString(Round round) {
 
-			System.out.println();
-			String WinLost = String.format("%n%n");
-			Player user = round.getPlayers()[0];
-			if (user.getHand().length == round.getDeck().getDeck().size() - round.getPile().getCards().length) {
-				if (round.getWinner() != null) {
-					WinLost += String.format("YOU WON THE GAME!: " + round.getWinner().getName());
-				} else {
-					WinLost += String.format("YOU WON THE GAME!:" + user.getName());
-				}
-			} else if (user.getHand().length == 0) {
-				WinLost += String.format("YOU LOST THE GAME!:" + user.getName());
-			}
-			roundString += WinLost;
-			System.out.println();
-			String WinnerDraw = String.format("%n%n");
-			if (round.isDraw()) {
-				WinnerDraw += String.format("This round was a draw.%n%n");
-			} else {
-				WinnerDraw += String.format("%s won the previous round%n%n", round.getWinner().getName());
-			}
-			roundString += WinnerDraw;
-			return roundString;
-		} else {
-			String roundString = String.format("");
-			String Attribute = "";
-			if (round.getIndex() == 1) {
-				Attribute = round.getDeck().getSize();
-			} else if (round.getIndex() == 2) {
-				Attribute = round.getDeck().getSpeed();
-			} else if (round.getIndex() == 3) {
-				Attribute = round.getDeck().getRange();
-			} else if (round.getIndex() == 4) {
-				Attribute = round.getDeck().getFirepower();
-			} else if (round.getIndex() == 5) {
-				Attribute = round.getDeck().getCargo();
-			}
-			roundString += String.format("Previous round attribute: %s%n", Attribute);
-			String score = String.format("");
-			for (int i = 0; i < round.getPlayers().length; i++) {
-				Player p = round.getPlayers()[i];
-				if (p.getHand().length > 0) {
-					score += String.format("%s: ", round.getPlayers()[i].getName());
-					score += String.format("%d    ", round.getPrevValues()[i]);
-				}
-			}
-			score += String.format("%n%n");
-			roundString += score;
-
-			String WinLost = String.format("%n%n");
-
-			for (int i = 1; i < round.getPlayers().length; i++) {
-				Player user = round.getPlayers()[i];
-				if (user.getHand().length == round.getDeck().getDeck().size() - round.getPile().getCards().length) {
-					if (round.getWinner() != null) {
-						WinLost += String.format("YOU WON THE GAME!: " + round.getWinner().getName());
-					} else {
-						WinLost += String.format("YOU WON THE GAME!: " + user.getName());
-					}
-				}
-			}
-			roundString += WinLost;
-
-			String WinnerDraw = String.format("%n%n");
-			if (round.isDraw()) {
-				WinnerDraw += String.format("This round was a draw.%n%n");
-			} else {
-				WinnerDraw += String.format("%s won the previous round%n%n", round.getWinner().getName());
-			}
-			roundString += WinnerDraw;
-			return roundString;
+		String roundString = String.format("");
+		String Attribute = "";
+		if (round.getIndex() == 1) {
+			Attribute = round.getDeck().getSize();
+		} else if (round.getIndex() == 2) {
+			Attribute = round.getDeck().getSpeed();
+		} else if (round.getIndex() == 3) {
+			Attribute = round.getDeck().getRange();
+		} else if (round.getIndex() == 4) {
+			Attribute = round.getDeck().getFirepower();
+		} else if (round.getIndex() == 5) {
+			Attribute = round.getDeck().getCargo();
 		}
+		roundString += String.format("Previous round attribute: %s%n", Attribute);
+		String score = String.format("");
+		for (int i = 0; i < round.getPlayers().length; i++) {
+			Player p = round.getPlayers()[i];
+			if (p.getHand().length > 0) {
+				score += String.format("%s: ", p.getName());
+				score += String.format("%d    ", round.getPrevValues()[i]);
+			}
+		}
+		score += String.format("%n%n");
+		roundString += score;
+
+		System.out.println();
+		String WinLost = String.format("%n%n");
+		Player user = round.getPlayers()[0];
+		if (user.getHand().length == round.getDeck().getDeck().size() - round.getPile().getCards().length) {
+			if (round.getWinner() != null) {
+				WinLost += String.format("YOU WON THE GAME!: " + round.getWinner().getName());
+			} else {
+				WinLost += String.format("YOU WON THE GAME!:" + user.getName());
+			}
+		} else if (user.getHand().length == 0) {
+			WinLost += String.format("YOU LOST THE GAME!:" + user.getName());
+		}
+		roundString += WinLost;
+		System.out.println();
+		String WinnerDraw = String.format("%n%n");
+		if (round.isDraw()) {
+			WinnerDraw += String.format("This round was a draw.%n%n");
+		} else {
+			WinnerDraw += String.format("%s won the previous round%n%n", round.getWinner().getName());
+		}
+		roundString += WinnerDraw;
+		return roundString;
 	}
 	
+	//Function that is used to show the cards in play of the round and also to indicate which cards were left after playing the round.
 	public void startHovering(Round round) {
 		System.out.println("---------------------------");
 		Card[] cardsArray = { null, null, null, null, null };
@@ -156,7 +109,7 @@ public class RoundView {
 		}
 		System.out.println("---------------------------");
 		String Attribute = "";
-		if (round.getIndex()== 1) {
+		if (round.getIndex() == 1) {
 			Attribute = round.getDeck().getSize();
 		} else if (round.getIndex() == 2) {
 			Attribute = round.getDeck().getSpeed();
@@ -252,12 +205,12 @@ public class RoundView {
 			PlayerController playerC = new PlayerController();
 			for (Card c : round.getCards()) {
 				if (c != null) {
-					playerC.giveCard(c, round.getWinner()); 
+					playerC.giveCard(c, round.getWinner());
 				}
 			}
 			for (Card c : round.getPile().getCards()) {
 				if (c != null) {
-					playerC.giveCard(c, round.getWinner()); 
+					playerC.giveCard(c, round.getWinner());
 				}
 			}
 			round.setPile(new CommunalPile());
