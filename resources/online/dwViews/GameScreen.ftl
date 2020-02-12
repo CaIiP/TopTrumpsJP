@@ -18,15 +18,203 @@
     	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-	</head>
+	
+          
+    </div>
 
-    <body onload="initalize()"> <!-- Call the initalize method when the page loads -->
-    	
-    	<div class="container">
+ 
+   <body onload="initalize()"> <!-- Call the initalize method when the page loads -->
+<header>
+    <div class="header">
+        <center><h1 style="background-color:#000FFF; font-size:40px; color:#FFFFFF; text-align:center; padding:20px">Top Trumps Game</h1></center>
+    </header>
+</div>
 
-			<!-- Add your HTML Here -->
+
+<body>
+        <style>
+
+            .footer {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background-color: #4d4d4d;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+    </style>
+            <body>
+    	         <style>
+
+                       .categoryButtons {
+                        position: absolute;
+                        center: 100;
+                        font: bold;
+                        text-align: center;
+                    }
+
+                    #nextButton {
+                        position: absolute;
+                        right: 0;
+                        bottom: 100;
+                        left: 1100;
+                        font: bold;
+                        text-align: center;
+                    }
+         </style>
+  
+  </div>
+  <div class = "container">
+
+                    <div class="mx-auto" style="width: 200px;">
+        <div class="card border-danger mb-3" style="width: 18rem;">
+                <div class="card-header text-center text-white bg-danger mb-3" style="max-width: 18rem;">
+                    <h5 id="activePlayer"></h5>
+                    <p id="communalPile"></p>
+                    <p id="roundNumber"></p>
+                </div>
+                <div class="card-body text-center">
+                        <h5 id="ann1"></h5><br/>
+                        <p id="ann2"></p>
+                    </div>
+                  </div><br/><br/>
+    </div>
+    
+    <div class="container">	
+		<div id="playing-cards" class="container">
+    <div class="card-deck">
+    <div  class="card border-success" id="card1" style="width: 18rem;">
+            <div class="card-header text-white text-center bg-success mb-3" style="max-width: 18rem;">
+                <h5>Player 1</h5>
+                <p id="numberCard1"></p>
+            </div>
+            <div class="card-name text-center">
+                    <h5 id="cardName1"></h5>
+                </div>
+                
+                <div class="card-body">
+                  
+                  <p class="card-attributes">
+                    <ul>
+                        <li id="attribute1"></li>
+                        <li id="attribute2"></li>
+                        <li id="attribute3"></li>
+                        <li id="attribute4"></li>
+                        <li id="attribute5"></li>
+                      </ul>
+                  </p>
+                </div>
+              </div>
 		
-		</div>
+              <div class="card border-warning" id="card2" style="width: 18rem;">
+                    <div class="card-header text-center text-white bg-warning mb-3" style="max-width: 18rem;">
+                        <h5>Player 2</h5>
+                        <p id="numberCard2"></p>
+                    </div>
+                    <div class="card-name text-center">
+                        <h5 id="cardName2"></h5>
+       
+                        </div>
+                        <div class="card-body">
+                          
+                          <p class="card-attributes">
+                              <ul>
+                                  <li id="attributeB1"></li>
+                        <li id="attribute6"></li>
+                        <li id="attribute7"></li>
+                        <li id="attribute8"></li>
+                        <li id="attribute9"></li>
+                              </ul>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="card border-warning" style="width: 18rem;">
+                            <div class="card-header text-center text-white bg-warning mb-2" id="card3" style="max-width: 18rem;">
+                                <h5>Player 3</h5>
+                                <p id="numberCard3"></p>
+                            </div>
+                            <div class="card-name text-center">
+                                <h5 id="cardName3"></h5>
+                                </div>
+                                <div class="card-body">
+                                  
+                                  <p class="card-attributes">
+                                      <ul>
+                                         <li id="attributeC1"></li>
+                        <li id="attribute10"></li>
+                        <li id="attribute11"></li>
+                        <li id="attribute12"></li>
+                        <li id="attribute13"></li>
+                                      </ul>
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div class="card border-warning" style="width: 18rem;">
+                                    <div class="card-header text-center text-white bg-warning mb-3" id="card4" style="max-width: 18rem;">
+                                        <h5>Player 4</h5>
+                                        <p id="numberCard4"></p>
+                                    </div>
+                                    <div class="card-name text-center">
+                                        <h5 id="cardName4"></h5>
+                                        </div>
+                                        <div class="card-body">
+                                          
+                                          <p class="card-attributes">
+                                              <ul>
+                                                <li id="attributeD1"></li>
+                        <li id="attribute14"></li>
+                        <li id="attribute15"></li>
+                        <li id="attribute16"></li>
+                        <li id="attribute17"></li>
+                                              </ul>
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      <div class="card border-warning" style="width: 18rem;">
+                                            <div class="card-header text-center text-white bg-warning mb-3"  style="max-width: 18rem;">
+                                                <h5>Player 5</h5>
+                                                <p id="numCard5"></p>
+                                            </div>
+                                            <div class="card-name text-center">
+                                                    <h5 id="cardName5"></h5>
+                                                </div>
+                                                <div class="card-body">
+                                                  
+                                                  <p class="card-attributes">
+                                                      <ul>
+                                                          <li id="attributeE1"></li>
+                        <li id="attribute18"></li>
+                        <li id="attribute19"></li>
+                        <li id="attribute20"></li>
+                        <li id="attribute21"></li>
+                                                      </ul>
+                                                  </p>
+                                                </div>
+                                              </div>
+  </div>  
+  
+<button type="button" id="nextButton" onclick="updateGame();" class="btn btn-primary btn-lg">Next</button><h:form style="display: block; text-align: center; margin: auto; width: 200px"> 
+      <center>  <div  class="categoryButtons" id="categoryButtons">                                      
+        <button id="sizeButton" onclick="response(0); Category();">Size</button>
+        <button id="speedButton" onclick="response(1); Categoty();">Speed</button>
+        <button id="rangeButton" onclick="response(2); Category();">Range</button>
+        <button id="firePower" onclick="response(3); Category();">Firepower</button>
+        <button id="cargoButton" onclick="response(4); Category();">Cargo</button>
+        </center>
+    </div></h: form>  </div><br/><br/>
+
+      
+<div class="footer"><center>
+            Presented by Javamir Putin </br>Shannen Harper 2095119H - Calum Paterson 2040455P - Fara Stringfellow 2131715S - Rija Fatima 2229772F </center>
+        </div>
 		
 		<script type="text/javascript">
 		
